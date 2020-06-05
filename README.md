@@ -28,6 +28,19 @@ client.id.prefix = <client-id-prefix>
 
 # Publish and Subscribe
 
+You need Python 3.6 or newer to run the examples. The recommended way to run this project is within a virtual environment:
+```bash
+python3 -m venv venv
+source ./venv/bin/activate
+pip install -r requirements.txt
+```
+
+There are two main files to run:
+```bash
+python -m subscriber
+python -m publisher
+```
+
 Upon running, you will be prompted to provide `username` and `password` to your Sandbox. 
 Look for the details in the email received from [IoTDevelopers@akamai.com](mailto:IoTDevelopers@akamai.com), after requesting a Sandbox.
 
