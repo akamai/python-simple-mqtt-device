@@ -15,6 +15,7 @@
 # limitations under the License.
 
 
+import os
 import uuid
 from getpass import getpass
 
@@ -24,13 +25,12 @@ import requests
 class SandBox:
     DEFAULT_TOPIC = 'data'
 
-    def __init__(self, config_file=None):
-        self.config_file = config_file or 'resources/configuration.txt'
-        conf = self.read_config()
+    def __init__(self, config=None):
+        config = config or Config.from_file()
 
-        self.client_id = conf['client.id.prefix'] + uuid.uuid4().hex
-        self.host = conf['mqtt.host']
-        self.topic_prefix = conf['topic.prefix']
+        self.client_id = config.client_id + uuid.uuid4().hex
+        self.host = config.host
+        self.topic_prefix = config.topic_prefix
         self.token = ''
         self.username = ''
 
@@ -49,12 +49,24 @@ class SandBox:
         response_data = r.json()
         self.token = response_data['token']
 
-    def read_config(self):
-        with open(self.config_file) as f:
-            configuration = f.readlines()
+    def get_topic(self, name=DEFAULT_TOPIC):
+        return f'{self.topic_prefix}{name}'
+
+
+class Config:
+    def __init__(self, host, client_id, topic_prefix):
+        self.host = host
+        self.client_id = client_id
+        self.topic_prefix = topic_prefix
+
+    @classmethod
+    def from_file(cls, path=None):
+        path = path or os.path.join('resources', 'configuration.txt')
+        with open(path) as f:
+            lines = f.readlines()
 
         conf_dict = {}
-        for line in configuration:
+        for line in lines:
             line = line.strip()
 
             if not line:
@@ -67,7 +79,8 @@ class SandBox:
             except ValueError:
                 print(f'Warning: failed to parse config line: "{line}"')
 
-        return conf_dict
-
-    def get_topic(self, name=DEFAULT_TOPIC):
-        return f'{self.topic_prefix}{name}'
+        return cls(
+            host=conf_dict['mqtt.host'],
+            client_id=conf_dict['client.id.prefix'],
+            topic_prefix=conf_dict['topic.prefix'],
+        )
