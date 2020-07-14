@@ -1,0 +1,7 @@
+# CODEOWNERS
+# python-simple-mqtt-device
+# Owners: Akamai IoT Developers <dl-iec-devrel-admins@akamai.com>
+# Primary contact: Tomasz Weglinski <tweglins@akamai.com>
+
+*       @tweglinski @mingerma
+*.py    @tzamkot @qmorek
